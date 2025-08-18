@@ -1,0 +1,11 @@
+# C:/githome/15week_cloud-data-viz/requirements.txt
+pandas
+numpy
+matplotlib
+seaborn
+plotly
+folium
+dash
+requests
+jupyter
+nbformat
