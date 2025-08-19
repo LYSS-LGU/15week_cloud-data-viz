@@ -1,5 +1,242 @@
 # 15주차 클라우드 기반 데이터 시각화
 
+## 📚 Plotly 고급 시각화 학습 정리 (CO2 분석 프로젝트)
+
+### 🎯 학습 목표
+- **Plotly Express vs Graph Objects** 차이점 이해 및 활용
+- **인터랙티브 차트** 구현 기법 습득
+- **다중 서브플롯** 구성 및 레이아웃 설계
+- **고급 스타일링** 및 사용자 경험 최적화
+
+---
+
+### 📊 1. Plotly Express 기본 활용
+
+#### 버블 차트 (Scatter Plot)
+```python
+# 3차원 데이터를 2D로 효과적 표현
+fig_bubble = px.scatter(
+    data, 
+    x='Engine Size(L)', 
+    y='CO2 Emissions(g/km)',
+    size='Fuel Consumption Comb (mpg)',  # 버블 크기
+    color='Make',                        # 색상 구분
+    hover_data=['Model', 'Vehicle Class'], # 호버 정보
+    size_max=20                          # 최대 버블 크기
+)
+```
+**학습 포인트**: 3개 이상의 변수를 동시에 시각화하는 효과적인 방법
+
+#### 박스플롯 분포 분석
+```python
+fig_box = px.box(
+    data, 
+    x='Vehicle Class', 
+    y='CO2 Emissions(g/km)',
+    color='Vehicle Class'  # 카테고리별 색상
+)
+```
+**학습 포인트**: 범주형 데이터의 분포와 이상치를 한 번에 파악
+
+#### 상관관계 시각화 (추세선 포함)
+```python
+fig_corr = px.scatter(
+    data,
+    x='Fuel Consumption Comb (mpg)',
+    y='CO2 Emissions(g/km)',
+    trendline='ols',  # 회귀선 자동 추가
+    color='Vehicle Class'
+)
+```
+**학습 포인트**: `trendline='ols'`로 통계적 관계를 시각적으로 표현
+
+---
+
+### 🔧 2. Graph Objects 고급 제어
+
+#### 기준선 추가 기법
+```python
+# 수평선 (임계값 표시)
+fig.add_hline(
+    y=200, 
+    line_dash="dash", 
+    line_color="red",
+    annotation_text="🚨 친환경 기준선 (200g/km)"
+)
+
+# 수직선 (기준값 표시)  
+fig.add_vline(
+    x=2.0,
+    line_dash="dot",
+    line_color="green", 
+    annotation_text="💚 효율적 엔진 크기"
+)
+```
+**학습 포인트**: 데이터에 의미 있는 기준선을 추가하여 해석력 향상
+
+#### 영역 강조 표시
+```python
+# 사각형 영역 강조
+fig.add_vrect(x0=35, x1=50, fillcolor="green", opacity=0.1)
+fig.add_hrect(y0=120, y1=180, fillcolor="lightgreen", opacity=0.1)
+```
+**학습 포인트**: 특정 구간을 시각적으로 강조하여 중요 정보 전달
+
+---
+
+### 📐 3. 서브플롯 구성 및 다중 차트
+
+#### 2x2 서브플롯 레이아웃
+```python
+from plotly.subplots import make_subplots
+
+fig = make_subplots(
+    rows=2, cols=2,
+    subplot_titles=('차트1', '차트2', '차트3', '차트4'),
+    specs=[[{"secondary_y": False}, {"secondary_y": False}],
+           [{"secondary_y": False}, {"type": "pie"}]]  # 파이차트 지정
+)
+
+# 각 위치에 차트 추가
+fig.add_trace(go.Bar(...), row=1, col=1)
+fig.add_trace(go.Bar(...), row=1, col=2)  
+fig.add_trace(go.Pie(...), row=2, col=2)
+```
+**학습 포인트**: 여러 관점의 분석을 하나의 대시보드로 통합
+
+---
+
+### 🎨 4. 고급 스타일링 및 레이아웃
+
+#### 제목 및 축 레이블 고급 설정
+```python
+fig.update_layout(
+    title={
+        'text': '🌍 제목<br><sub>부제목</sub>',
+        'x': 0.5,           # 중앙 정렬
+        'xanchor': 'center',
+        'font': {'size': 18}
+    },
+    xaxis_title='🔧 X축 제목',
+    yaxis_title='🌱 Y축 제목'
+)
+```
+
+#### 배경 및 색상 테마
+```python
+fig.update_layout(
+    plot_bgcolor='rgba(240,248,255,0.8)',  # 연한 하늘색
+    paper_bgcolor='white',
+    font=dict(size=12)
+)
+```
+
+#### 범례 위치 조정
+```python
+fig.update_layout(
+    legend=dict(
+        orientation="v",     # 세로 배치
+        yanchor="top", y=1,
+        xanchor="left", x=1.01  # 차트 오른쪽 외부
+    )
+)
+```
+
+#### 축 그리드 스타일링
+```python
+fig.update_xaxes(
+    gridcolor='lightgray',
+    gridwidth=1,
+    showgrid=True,
+    tickangle=45  # 레이블 회전
+)
+```
+
+---
+
+### 💡 5. 호버 정보 커스터마이징
+
+```python
+# 상세한 호버 템플릿 구성
+hovertemplate=
+'<b>%{y}</b><br>' +
+'🌱 평균 CO2: %{x:.1f} g/km<br>' +
+'⛽ 평균 연비: %{customdata[0]:.1f} mpg<br>' +
+'🚗 차량 수: %{customdata[1]:.0f}대<br>' +
+'<extra></extra>',  # 박스 테두리 제거
+customdata=np.column_stack((연비데이터, 차량수데이터))
+```
+**학습 포인트**: 사용자가 차트와 상호작용할 때 풍부한 정보 제공
+
+---
+
+### 🔍 6. 데이터 전처리 및 분석 기법
+
+#### 상위 데이터 필터링
+```python
+# 가독성을 위한 상위 N개 선택
+top_makes = data['Make'].value_counts().head(15).index
+filtered_data = data[data['Make'].isin(top_makes)]
+```
+
+#### 통계값 계산 및 그룹화
+```python
+# 제조사별 통계 (최소 N대 이상)
+stats = data.groupby('Make').agg({
+    'CO2 Emissions(g/km)': ['mean', 'count'],
+    'Fuel Consumption Comb (mpg)': 'mean'
+}).round(2)
+stats = stats[stats[('CO2 Emissions(g/km)', 'count')] >= 5]
+```
+
+#### 환경 점수 계산
+```python
+# 복합 지표 생성
+stats['환경점수'] = (
+    (300 - stats['평균_CO2']) * 0.6 +    # CO2 비중 60%
+    (stats['평균_연비'] * 3) * 0.4       # 연비 비중 40%  
+).round(1)
+```
+
+---
+
+### ⚡ 7. 성능 최적화 팁
+
+1. **대용량 데이터**: 상위 N개 필터링으로 렌더링 속도 개선
+2. **색상 최적화**: `px.colors.qualitative.Set3` 등 미리 정의된 팔레트 사용
+3. **메모리 관리**: 불필요한 컬럼 제거 및 데이터 타입 최적화
+4. **차트 크기**: `width`, `height` 명시적 설정으로 레이아웃 안정화
+
+---
+
+### 🎓 핵심 학습 성과
+
+1. **Plotly Express**: 빠른 프로토타이핑과 기본 인터랙티브 차트
+2. **Graph Objects**: 세밀한 제어와 고급 커스터마이징
+3. **서브플롯**: 다각도 분석을 위한 통합 대시보드 구성
+4. **스타일링**: 전문적이고 사용자 친화적인 시각화 디자인
+5. **데이터 스토리텔링**: 기준선, 영역 강조 등으로 인사이트 강화
+
+**다음 학습 목표**: Streamlit과 연동하여 웹 애플리케이션으로 배포하기
+
+---
+
+## 🚀 Streamlit 핵심 정리
+
+### 필수 구성 요소
+- **텍스트**: `st.title()`, `st.header()`, `st.markdown()`
+- **데이터 표시**: `st.dataframe()`, `st.metric()`, `st.code()`  
+- **사용자 입력**: `st.button()`, `st.selectbox()`, `st.slider()`
+- **상태 관리**: `st.session_state` - 페이지 간 데이터 유지
+- **캐싱**: `@st.cache_data` - 성능 최적화
+
+### 실습 데이터셋
+- **ABNB 주식**: 캔들스틱 차트, 거래량 분석
+- **EV 충전**: 시간대별 패턴 분석  
+- **의료비**: 상관관계 시각화
+
+---
+
 ## 프로젝트 개요
 
 이 프로젝트는 클라우드 환경에서 다양한 데이터 시각화 도구를 학습하고 활용하는 것을 목표로 합니다. Python의 주요 시각화 라이브러리인 Matplotlib, Seaborn, Plotly와 지도 시각화 도구인 Folium, 그리고 웹 애플리케이션 개발을 위한 Streamlit 사용법을 다룹니다.
@@ -206,19 +443,246 @@ streamlit run app.py
 
 ---
 
+## 📚 Plotly 고급 시각화 학습 정리 (CO2 분석 프로젝트)
+
+### 🎯 학습 목표
+- **Plotly Express vs Graph Objects** 차이점 이해 및 활용
+- **인터랙티브 차트** 구현 기법 습득
+- **다중 서브플롯** 구성 및 레이아웃 설계
+- **고급 스타일링** 및 사용자 경험 최적화
+
+---
+
+### 📊 1. Plotly Express 기본 활용
+
+#### 버블 차트 (Scatter Plot)
+```python
+# 3차원 데이터를 2D로 효과적 표현
+fig_bubble = px.scatter(
+    data, 
+    x='Engine Size(L)', 
+    y='CO2 Emissions(g/km)',
+    size='Fuel Consumption Comb (mpg)',  # 버블 크기
+    color='Make',                        # 색상 구분
+    hover_data=['Model', 'Vehicle Class'], # 호버 정보
+    size_max=20                          # 최대 버블 크기
+)
+```
+**학습 포인트**: 3개 이상의 변수를 동시에 시각화하는 효과적인 방법
+
+#### 박스플롯 분포 분석
+```python
+fig_box = px.box(
+    data, 
+    x='Vehicle Class', 
+    y='CO2 Emissions(g/km)',
+    color='Vehicle Class'  # 카테고리별 색상
+)
+```
+**학습 포인트**: 범주형 데이터의 분포와 이상치를 한 번에 파악
+
+#### 상관관계 시각화 (추세선 포함)
+```python
+fig_corr = px.scatter(
+    data,
+    x='Fuel Consumption Comb (mpg)',
+    y='CO2 Emissions(g/km)',
+    trendline='ols',  # 회귀선 자동 추가
+    color='Vehicle Class'
+)
+```
+**학습 포인트**: `trendline='ols'`로 통계적 관계를 시각적으로 표현
+
+---
+
+### 🔧 2. Graph Objects 고급 제어
+
+#### 기준선 추가 기법
+```python
+# 수평선 (임계값 표시)
+fig.add_hline(
+    y=200, 
+    line_dash="dash", 
+    line_color="red",
+    annotation_text="🚨 친환경 기준선 (200g/km)"
+)
+
+# 수직선 (기준값 표시)  
+fig.add_vline(
+    x=2.0,
+    line_dash="dot",
+    line_color="green", 
+    annotation_text="💚 효율적 엔진 크기"
+)
+```
+**학습 포인트**: 데이터에 의미 있는 기준선을 추가하여 해석력 향상
+
+#### 영역 강조 표시
+```python
+# 사각형 영역 강조
+fig.add_vrect(x0=35, x1=50, fillcolor="green", opacity=0.1)
+fig.add_hrect(y0=120, y1=180, fillcolor="lightgreen", opacity=0.1)
+```
+**학습 포인트**: 특정 구간을 시각적으로 강조하여 중요 정보 전달
+
+---
+
+### 📐 3. 서브플롯 구성 및 다중 차트
+
+#### 2x2 서브플롯 레이아웃
+```python
+from plotly.subplots import make_subplots
+
+fig = make_subplots(
+    rows=2, cols=2,
+    subplot_titles=('차트1', '차트2', '차트3', '차트4'),
+    specs=[[{"secondary_y": False}, {"secondary_y": False}],
+           [{"secondary_y": False}, {"type": "pie"}]]  # 파이차트 지정
+)
+
+# 각 위치에 차트 추가
+fig.add_trace(go.Bar(...), row=1, col=1)
+fig.add_trace(go.Bar(...), row=1, col=2)  
+fig.add_trace(go.Pie(...), row=2, col=2)
+```
+**학습 포인트**: 여러 관점의 분석을 하나의 대시보드로 통합
+
+---
+
+### 🎨 4. 고급 스타일링 및 레이아웃
+
+#### 제목 및 축 레이블 고급 설정
+```python
+fig.update_layout(
+    title={
+        'text': '🌍 제목<br><sub>부제목</sub>',
+        'x': 0.5,           # 중앙 정렬
+        'xanchor': 'center',
+        'font': {'size': 18}
+    },
+    xaxis_title='🔧 X축 제목',
+    yaxis_title='🌱 Y축 제목'
+)
+```
+
+#### 배경 및 색상 테마
+```python
+fig.update_layout(
+    plot_bgcolor='rgba(240,248,255,0.8)',  # 연한 하늘색
+    paper_bgcolor='white',
+    font=dict(size=12)
+)
+```
+
+#### 범례 위치 조정
+```python
+fig.update_layout(
+    legend=dict(
+        orientation="v",     # 세로 배치
+        yanchor="top", y=1,
+        xanchor="left", x=1.01  # 차트 오른쪽 외부
+    )
+)
+```
+
+#### 축 그리드 스타일링
+```python
+fig.update_xaxes(
+    gridcolor='lightgray',
+    gridwidth=1,
+    showgrid=True,
+    tickangle=45  # 레이블 회전
+)
+```
+
+---
+
+### 💡 5. 호버 정보 커스터마이징
+
+```python
+# 상세한 호버 템플릿 구성
+hovertemplate=
+'<b>%{y}</b><br>' +
+'🌱 평균 CO2: %{x:.1f} g/km<br>' +
+'⛽ 평균 연비: %{customdata[0]:.1f} mpg<br>' +
+'🚗 차량 수: %{customdata[1]:.0f}대<br>' +
+'<extra></extra>',  # 박스 테두리 제거
+customdata=np.column_stack((연비데이터, 차량수데이터))
+```
+**학습 포인트**: 사용자가 차트와 상호작용할 때 풍부한 정보 제공
+
+---
+
+### 🔍 6. 데이터 전처리 및 분석 기법
+
+#### 상위 데이터 필터링
+```python
+# 가독성을 위한 상위 N개 선택
+top_makes = data['Make'].value_counts().head(15).index
+filtered_data = data[data['Make'].isin(top_makes)]
+```
+
+#### 통계값 계산 및 그룹화
+```python
+# 제조사별 통계 (최소 N대 이상)
+stats = data.groupby('Make').agg({
+    'CO2 Emissions(g/km)': ['mean', 'count'],
+    'Fuel Consumption Comb (mpg)': 'mean'
+}).round(2)
+stats = stats[stats[('CO2 Emissions(g/km)', 'count')] >= 5]
+```
+
+#### 환경 점수 계산
+```python
+# 복합 지표 생성
+stats['환경점수'] = (
+    (300 - stats['평균_CO2']) * 0.6 +    # CO2 비중 60%
+    (stats['평균_연비'] * 3) * 0.4       # 연비 비중 40%  
+).round(1)
+```
+
+---
+
+### ⚡ 7. 성능 최적화 팁
+
+1. **대용량 데이터**: 상위 N개 필터링으로 렌더링 속도 개선
+2. **색상 최적화**: `px.colors.qualitative.Set3` 등 미리 정의된 팔레트 사용
+3. **메모리 관리**: 불필요한 컬럼 제거 및 데이터 타입 최적화
+4. **차트 크기**: `width`, `height` 명시적 설정으로 레이아웃 안정화
+
+---
+
+### 🎓 핵심 학습 성과
+
+1. **Plotly Express**: 빠른 프로토타이핑과 기본 인터랙티브 차트
+2. **Graph Objects**: 세밀한 제어와 고급 커스터마이징
+3. **서브플롯**: 다각도 분석을 위한 통합 대시보드 구성
+4. **스타일링**: 전문적이고 사용자 친화적인 시각화 디자인
+5. **데이터 스토리텔링**: 기준선, 영역 강조 등으로 인사이트 강화
+
+**다음 학습 목표**: Streamlit과 연동하여 웹 애플리케이션으로 배포하기
+
+---
+
 ## 실습 내용
 
 ### 주요 실습 파일
 - **250818_cloud_data_viz.ipynb**: 메인 실습 노트북
 - **250818_cloud_data_viz_v2.ipynb**: 통합 실습 노트북 (Seaborn + Plotly + Folium)
+- **CO2_Plotly_Visualization.ipynb**: CO2 배출량 데이터 종합 분석 (인터랙티브 시각화)
+- **CO2_Visualization_V2.ipynb**: CO2 데이터 간단 버전 분석
+- **streamlit_dashboard.py**: Streamlit 기반 대시보드 애플리케이션
 - **72_dash_test.py**: Dash 인터랙티브 대시보드 예제
 
 ### 주요 실습 데이터
 - **Tips 데이터셋**: 팁 데이터를 활용한 기본 시각화 실습
 - **Global Internet Users**: 전 세계 인터넷 사용자 데이터 시각화
+- **CO2 Emissions**: 7,385대 차량의 CO2 배출량 환경 분석 데이터
+- **ABNB Stock**: 에어비앤비 주식 데이터 (캔들스틱 차트, 거래량 분석)
+- **EV Charge**: 전기차 충전 패턴 및 사용량 분석 데이터
+- **Medical Cost**: 의료비 영향 요인 분석 데이터
 - **Seaborn 내장 데이터셋**: 다양한 통계 차트 실습
 - **스타벅스 매장 데이터**: API 연동을 통한 실시간 지도 시각화
-- **EV 충전 데이터**: 전기차 충전소 분석 실습
 
 ### 학습 순서
 1. 데이터 시각화 기초 개념 이해
