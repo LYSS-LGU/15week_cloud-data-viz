@@ -382,6 +382,29 @@ tips, iris, titanic, flights 등 다양한 예제 데이터셋 제공
 - **실시간 편집**: 스크립트 편집 시 앱 즉시 업데이트
 - **오픈소스**: 활발한 커뮤니티 지원
 
+#### 🚀 Streamlit Community Cloud 배포 실습 (2025-08-21)
+
+**배포 과정:**
+1. **GitHub 저장소 준비**: 코드와 requirements.txt 업로드
+2. **Community Cloud 연결**: https://share.streamlit.io/ 에서 GitHub 연동
+3. **자동 배포**: 코드 변경 시 자동으로 재배포
+4. **무료 호스팅**: 개인 프로젝트용 무료 제공
+
+**실습 내용:**
+- **AutocarZ 대시보드**: 로드킬 방지 시각화 대시보드 배포
+- **종합 데이터 시각화**: 6개 데이터셋 통합 대시보드 배포
+- **팀원 협업**: GitHub 기반 코드 공유 및 공동 배포
+
+**배포 URL 예시:**
+- 강사님 데모: https://2025yleeapp01.streamlit.app/
+- 실습 결과: 각 팀별 개별 도메인 제공
+
+**핵심 배운 점:**
+- **requirements.txt 중요성**: Pillow 등 의존성 누락 시 배포 실패
+- **이미지 파일 경로**: 상대 경로로 이미지 파일 관리 필요
+- **실시간 업데이트**: GitHub push 시 자동으로 앱 재배포
+- **에러 디버깅**: Community Cloud 로그를 통한 문제 해결
+
 #### 환경 설정
 
 **Python 3.9를 사용하는 이유:**

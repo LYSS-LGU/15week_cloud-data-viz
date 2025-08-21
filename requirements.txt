@@ -9,7 +9,7 @@ matplotlib
 seaborn
 plotly
 
-# 이미지 처리 (autocarz_streamlit.py용)
+# 이미지 처리 (autocarz_streamlit.py, app.py용)
 Pillow>=9.0.0
 
 # 기존 패키지들
