@@ -1,9 +1,18 @@
 # C:/githome/15week_cloud-data-viz/requirements.txt
+# 15주차 클라우드 기반 데이터 시각화 - 스트림릿 대시보드 의존성
+
+# 핵심 라이브러리
+streamlit>=1.28.0
 pandas
 numpy
 matplotlib
 seaborn
 plotly
+
+# 이미지 처리 (autocarz_streamlit.py용)
+Pillow>=9.0.0
+
+# 기존 패키지들
 folium
 dash
 requests

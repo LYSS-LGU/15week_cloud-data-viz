@@ -1,4 +1,3 @@
-# C:\githome\15week_cloud-data-viz\autocarz_streamlit.py
 import streamlit as st
 import pandas as pd
 from PIL import Image
