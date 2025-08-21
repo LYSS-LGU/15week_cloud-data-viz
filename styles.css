@@ -1,0 +1,287 @@
+/* C:\githome\15week_cloud-data-viz\styles.css */
+/* AutoCarz Streamlit 대시보드 스타일 */
+
+/* 전체 페이지 설정 */
+.stApp {
+    max-width: 100%;
+}
+
+/* 메인 컨테이너 여백 최소화 */
+.stMainBlockContainer {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+    max-width: 100% !important;
+}
+
+/* 특정 CSS 선택자 영역 크기 축소 및 여백 제거 */
+#root > div:nth-child(1) > div.withScreencast > div > div > section.stMain > div.stMainBlockContainer > div > div > div:nth-child(5) > div > div {
+    max-height: 50px !important;
+    height: 50px !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: none !important;
+}
+
+/* 카드들 여백 최소화 */
+#root > div:nth-child(1) > div.withScreencast > div > div > section.stMain > div.stMainBlockContainer > div > div > div:nth-child(5) > div > div > div > div:nth-child(1) {
+    margin-bottom: 5px !important;
+    padding-bottom: 5px !important;
+    margin-top: 5px !important;
+    padding-top: 5px !important;
+}
+
+/* 전체 컨테이너 높이 제한 */
+.stApp {
+    max-height: 100vh !important;
+    overflow: hidden !important;
+}
+
+/* 전체 스타일링 - 컴팩트하게 */
+.main-header {
+    text-align: center;
+    color: #333;
+    padding: 10px 0;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 15px;
+    font-size: 2.5rem;
+}
+
+/* 섹션 간격 최소화 */
+.stMarkdown {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* 메트릭 카드 바로 아래 공백 완전 제거 */
+.metric-container + * {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* Streamlit 기본 여백들 강제 제거 */
+.stTabs {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.stTabs > div {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* 메트릭 카드 영역 중앙 정렬 */
+.metric-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px auto 0 auto;
+    max-width: 1200px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* 메트릭 카드 스타일 - 더 컴팩트하게 */
+.metric-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 3px;
+    min-height: 90px;
+    flex: 1;
+    min-width: 200px;
+    max-width: 250px;
+}
+
+.metric-card h2 {
+    margin: 10px 0;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.metric-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.metric-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* 섹션 패널 스타일 */
+.section-panel {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    margin-top: 5px;
+    height: auto;
+    max-height: 280px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    overflow: auto;
+}
+
+.section-panel h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+/* 컬럼 간격 조정 */
+.element-container {
+    margin-bottom: 0.1rem !important;
+    margin-top: 0 !important;
+}
+
+/* 컬럼 전체 여백 최소화 */
+.stColumns {
+    gap: 10px !important;
+}
+
+.stColumns > div {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+/* Streamlit 기본 여백 최소화 */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 5px;
+    margin-bottom: 10px !important;
+}
+
+/* 탭 컨텐츠 여백 최소화 */
+.stTabs > div > div > div > div {
+    padding-top: 5px !important;
+    margin-top: 0 !important;
+}
+
+/* #\31 -254 영역들 여백 최소화 */
+[id*="31-254"], 
+.stTabs [data-baseweb="tab-panel"] > div,
+.stTabs [data-baseweb="tab-panel"] > div > div {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+}
+
+/* 탭 패널 내부 컨테이너 여백 제거 */
+.stTabs [data-baseweb="tab-panel"] {
+    padding-top: 5px !important;
+    margin-top: 0 !important;
+}
+
+/* 차트 컨테이너 */
+.chart-container {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 버튼 스타일 개선 */
+.stButton > button {
+    background-color: #4CAF50 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+    margin: 5px !important;
+    transition: all 0.3s ease !important;
+}
+
+.stButton > button:hover {
+    background-color: #45a049 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
+/* 사이드바 스타일 */
+.css-1d391kg {
+    background-color: #f8f9fa;
+}
+
+/* 탭 스타일 */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 8px;
+}
+
+.stTabs [data-baseweb="tab"] {
+    background-color: #f1f3f4;
+    border-radius: 8px;
+    color: #333;
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* 지도 컨테이너 */
+.stDeckGlJsonChart {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* 메트릭 컴포넌트 스타일 */
+.metric-container-inline {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .metric-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .metric-card {
+        min-width: 100%;
+        margin: 10px 0;
+    }
+    
+    .main-header {
+        font-size: 2rem;
+    }
+}
+
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* 카메라 입력 스타일 */
+.stCameraInput > div {
+    border-radius: 8px;
+    overflow: hidden;
+}

@@ -11,78 +11,33 @@ st.set_page_config(
     layout="wide"
 )
 
-# 커스텀 CSS 스타일 적용
+# CSS 파일 로드 함수
 def load_custom_css():
-    st.markdown("""
-    <style>
-    /* 전체 스타일링 */
-    .main-header {
-        text-align: center;
-        color: #333;
-        padding: 20px 0;
-        border-bottom: 2px solid #ddd;
-        margin-bottom: 30px;
-    }
-    
-    /* 패널 스타일링 */
-    .panel-container {
-        background: #fdfdfd;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-    
-    .panel-title {
-        color: #333;
-        margin-bottom: 15px;
-        font-size: 18px;
-        font-weight: 600;
-    }
-    
-    /* 이미지 컨테이너 */
-    .chart-container {
-        text-align: center;
-        margin: 20px 0;
-        padding: 15px;
-        background: #f9f9f9;
-        border-radius: 8px;
-        border: 1px solid #eee;
-    }
-    
-    /* 버튼 스타일 */
-    .stButton > button {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        margin: 5px;
-    }
-    
-    .stButton > button:hover {
-        background-color: #45a049;
-    }
-    
-    /* 메트릭 카드 스타일 */
-    .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 20px;
-        border-radius: 12px;
-        text-align: center;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        margin: 10px 0;
-    }
-    
-    /* 사이드바 스타일 */
-    .sidebar .sidebar-content {
-        background: #f8f9fa;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    """외부 CSS 파일을 로드하여 스타일을 적용하는 함수"""
+    try:
+        with open('styles.css', 'r', encoding='utf-8') as f:
+            css_content = f.read()
+        st.markdown(f'<style>{css_content}</style>', unsafe_allow_html=True)
+    except FileNotFoundError:
+        st.warning("CSS 파일을 찾을 수 없습니다. 기본 스타일을 사용합니다.")
+        # 기본 스타일 적용
+        st.markdown("""
+        <style>
+        .main-header {
+            text-align: center;
+            color: #333;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        .section-panel {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        </style>
+        """, unsafe_allow_html=True)
 
 # 이미지 로드 함수
 @st.cache_data
@@ -123,12 +78,12 @@ def main():
     with st.sidebar:
         st.title("📊 메뉴")
         page = st.selectbox("페이지 선택", [
-            "대시보드 홈",
-            "로드킬 분석", 
-            "지역별 통계",
+            "종합 대시보드",
+            "실시간 모니터링 현황",
+            "연도별 로드킬 분석", 
+            "지역별 통계 분석",
             "도로유형별 분석",
-            "동물종류별 분석",
-            "카메라 모니터링"
+            "동물종류별 분석"
         ])
         
         # 상태 정보
@@ -140,80 +95,244 @@ def main():
     # 이미지 데이터 로드
     images = load_images()
     
-    if page == "대시보드 홈":
-        show_dashboard_home(images)
-    elif page == "로드킬 분석":
+    if page == "종합 대시보드":
+        show_integrated_dashboard(images)
+    elif page == "실시간 모니터링 현황":
+        show_realtime_monitoring(images)
+    elif page == "연도별 로드킬 분석":
         show_roadkill_analysis(images)
-    elif page == "지역별 통계":
+    elif page == "지역별 통계 분석":
         show_regional_stats(images)
     elif page == "도로유형별 분석":
         show_roadtype_analysis(images)
     elif page == "동물종류별 분석":
         show_animal_analysis(images)
-    elif page == "카메라 모니터링":
-        show_camera_monitoring()
 
-# 대시보드 홈 페이지
-def show_dashboard_home(images):
-    st.markdown("## 📈 종합 대시보드")
+# 종합 대시보드 페이지 (개선된 레이아웃)
+def show_integrated_dashboard(images):
+    """종합 대시보드 메인 페이지 - 주요 지표와 실시간 모니터링 기능"""
+    st.markdown("## 📈 AutoCarz 종합 대시보드")
     
-    # 메트릭 카드들
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        st.markdown("""
+    # 메트릭 카드들 - 반응형 레이아웃으로 개선
+    st.markdown("""
+    <div class="metric-container">
         <div class="metric-card">
             <h3>총 로드킬 건수</h3>
             <h2>25,847건</h2>
             <p>2019-2023 누적</p>
         </div>
-        """, unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown("""
         <div class="metric-card">
             <h3>위험 구간</h3>
             <h2>143개소</h2>
             <p>모니터링 중</p>
         </div>
-        """, unsafe_allow_html=True)
-        
-    with col3:
-        st.markdown("""
         <div class="metric-card">
             <h3>동물 보호 건수</h3>
             <h2>1,254건</h2>
             <p>금년 누적</p>
         </div>
-        """, unsafe_allow_html=True)
-        
-    with col4:
-        st.markdown("""
         <div class="metric-card">
             <h3>시스템 가동률</h3>
             <h2>99.2%</h2>
             <p>정상 운영중</p>
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
     
-    st.markdown("---")
+    # 공간 여백 추가
+    st.markdown("<br>", unsafe_allow_html=True)
     
-    # 주요 차트 2개씩 배치
-    col1, col2 = st.columns(2)
+    # 메인 섹션들을 탭으로 구성하여 공간 효율성 향상
+    main_tab1, main_tab2 = st.tabs(["🔴 실시간 모니터링", "📊 시스템 현황"])
     
-    with col1:
+    with main_tab1:
+        # 실시간 모니터링 섹션
+        monitoring_col1, monitoring_col2 = st.columns(2)
+        
+        # 실시간 카메라 모니터링
+        with monitoring_col1:
+            st.markdown('<div class="section-panel">', unsafe_allow_html=True)
+            st.markdown("#### 📷 실시간 카메라 모니터링")
+            
+            camera_image = st.camera_input("📸 야생동물 발견 시 촬영", label_visibility="collapsed")
+            
+            if camera_image is not None:
+                st.image(camera_image, caption="촬영된 사진", width=250)
+                
+                if st.button("📍 로드킬 위험 신고", type="primary", use_container_width=True):
+                    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    if 'photo_logs' not in st.session_state:
+                        st.session_state.photo_logs = []
+                    
+                    import random
+                    lat = round(37.5665 + random.uniform(-0.01, 0.01), 6)
+                    lon = round(126.9780 + random.uniform(-0.01, 0.01), 6)
+                    
+                    st.session_state.photo_logs.insert(0, {
+                        'time': current_time,
+                        'lat': lat,
+                        'lon': lon
+                    })
+                    
+                    st.success("📍 신고 접수 완료!")
+                    st.balloons()
+            else:
+                st.markdown("""
+                <div style="
+                    background: #e3f2fd;
+                    padding: 20px;
+                    border-radius: 8px;
+                    text-align: center;
+                    color: #1976d2;
+                    margin: 10px 0;
+                ">
+                    <h5>📸 카메라 대기 중</h5>
+                    <small>야생동물을 발견하면 촬영해주세요</small>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        # 신고 위치 지도
+        with monitoring_col2:
+            st.markdown('<div class="section-panel">', unsafe_allow_html=True)
+            st.markdown("#### 🗺️ 신고 위치")
+            
+            if 'photo_logs' in st.session_state and st.session_state.photo_logs:
+                map_data = pd.DataFrame([
+                    {'lat': log['lat'], 'lon': log['lon']} for log in st.session_state.photo_logs[:10]
+                ])
+                st.map(map_data, height=250, zoom=11)
+            else:
+                default_map = pd.DataFrame([{'lat': 37.5665, 'lon': 126.9780}])
+                st.map(default_map, height=250, zoom=11)
+            
+            st.markdown('</div>', unsafe_allow_html=True)
+    
+    with main_tab2:
+        # 시스템 현황 섹션
+        status_col1, status_col2 = st.columns(2)
+        
+        # 최근 신고 기록
+        with status_col1:
+            st.markdown('<div class="section-panel">', unsafe_allow_html=True)
+            st.markdown("#### 🗂️ 최근 신고 기록")
+            
+            if 'photo_logs' in st.session_state and st.session_state.photo_logs:
+                # 최대 3개만 컴팩트하게 표시
+                for i, log in enumerate(st.session_state.photo_logs[:3]):
+                    st.markdown(f"""
+                    <div style="
+                        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                        padding: 10px;
+                        margin: 6px 0;
+                        border-radius: 8px;
+                        border-left: 4px solid #4CAF50;
+                        font-size: 13px;
+                    ">
+                        <strong style="color: #2c3e50;">🚨 신고 #{i+1}</strong><br>
+                        <span style="color: #555;">
+                            📅 {log['time']}<br>
+                            📍 {log['lat']:.4f}, {log['lon']:.4f}
+                        </span>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                # 관리 버튼들
+                btn_col1, btn_col2 = st.columns(2)
+                with btn_col1:
+                    if st.button("🗑️ 기록 초기화", use_container_width=True):
+                        st.session_state.photo_logs = []
+                        st.rerun()
+                with btn_col2:
+                    if st.button("📊 통계 보기", use_container_width=True):
+                        st.info(f"총 {len(st.session_state.photo_logs)}건의 신고")
+            else:
+                st.markdown("""
+                <div style="
+                    background: #fff3e0;
+                    padding: 20px;
+                    border-radius: 8px;
+                    text-align: center;
+                    color: #f57c00;
+                    margin: 10px 0;
+                ">
+                    <h5>📭 신고 기록이 없습니다</h5>
+                    <small>카메라로 야생동물을 촬영하고 신고해주세요</small>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        # 시스템 상태
+        with status_col2:
+            st.markdown('<div class="section-panel">', unsafe_allow_html=True)
+            st.markdown("#### 📊 시스템 상태")
+            
+            # 메트릭 2x2 배치
+            metric_row1_col1, metric_row1_col2 = st.columns(2)
+            with metric_row1_col1:
+                st.metric("오늘 신고", f"{len(st.session_state.photo_logs) if 'photo_logs' in st.session_state else 0}건", "🟢")
+            with metric_row1_col2:
+                st.metric("응답시간", "0.3초", "⚡")
+            
+            metric_row2_col1, metric_row2_col2 = st.columns(2)
+            with metric_row2_col1:
+                st.metric("활성 사용자", "142명", "👥")
+            with metric_row2_col2:
+                st.metric("시스템 상태", "정상", "✅")
+            
+            # 시스템 상태 표시
+            st.markdown("""
+            <div style="
+                background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+                padding: 15px;
+                border-radius: 8px;
+                text-align: center;
+                margin-top: 10px;
+            ">
+                <h5 style="color: #155724; margin: 0;">🔋 시스템 가동률: 99.2%</h5>
+                <small style="color: #155724;">모든 서비스가 정상 운영 중입니다</small>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown('</div>', unsafe_allow_html=True)
+
+# 실시간 모니터링 현황 페이지 (차트들 이동)
+def show_realtime_monitoring(images):
+    st.markdown("## 📊 실시간 모니터링 현황")
+    
+    # 탭으로 구성
+    tab1, tab2 = st.tabs(["📈 연도별 추이", "🗺️ 권역별 현황"])
+    
+    with tab1:
         if "연도별 로드킬 총 건수 추이" in images:
-            st.markdown('<div class="panel-container">', unsafe_allow_html=True)
-            st.markdown('<h3 class="panel-title">📊 연도별 로드킬 추이</h3>', unsafe_allow_html=True)
-            st.image(images["연도별 로드킬 총 건수 추이"], use_column_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown("### 📈 연도별 로드킬 추이")
+            st.image(images["연도별 로드킬 총 건수 추이"], use_container_width=True)
+            
+            # 간단한 통계
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("2023년", "6,847건", "↑ 12.3%")
+            with col2:
+                st.metric("2022년", "6,102건", "↑ 8.7%")
+            with col3:
+                st.metric("5년 평균", "5,169건", "")
     
-    with col2:
+    with tab2:
         if "각 권역 연도별 로드킬 건수" in images:
-            st.markdown('<div class="panel-container">', unsafe_allow_html=True)
-            st.markdown('<h3 class="panel-title">🗺️ 권역별 로드킬 현황</h3>', unsafe_allow_html=True)
-            st.image(images["각 권역 연도별 로드킬 건수"], use_column_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown("### 🗺️ 권역별 로드킬 현황")
+            st.image(images["각 권역 연도별 로드킬 건수"], use_container_width=True)
+            
+            # 권역별 순위
+            st.markdown("#### 🏆 권역별 로드킬 발생 순위 (2023년 기준)")
+            ranking_data = pd.DataFrame({
+                '순위': ['1위', '2위', '3위', '4위', '5위'],
+                '권역': ['경기도', '강원도', '충청남도', '전라남도', '경상북도'],
+                '건수': ['2,341건', '1,892건', '1,234건', '987건', '654건'],
+                '비율': ['34.2%', '27.6%', '18.0%', '14.4%', '9.5%']
+            })
+            st.table(ranking_data)
 
 # 로드킬 분석 페이지
 def show_roadkill_analysis(images):
@@ -223,7 +342,7 @@ def show_roadkill_analysis(images):
     if "연도별 로드킬 총 건수 추이" in images:
         st.markdown('<div class="chart-container">', unsafe_allow_html=True)
         st.markdown("### 📈 연도별 로드킬 총 건수 추이")
-        st.image(images["연도별 로드킬 총 건수 추이"], use_column_width=True)
+        st.image(images["연도별 로드킬 총 건수 추이"], use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
         
         with st.expander("📝 분석 결과"):
@@ -243,12 +362,12 @@ def show_regional_stats(images):
     with col1:
         if "각 권역 연도별 로드킬 건수" in images:
             st.markdown("### 📍 권역별 연도별 로드킬 건수")
-            st.image(images["각 권역 연도별 로드킬 건수"], use_column_width=True)
+            st.image(images["각 권역 연도별 로드킬 건수"], use_container_width=True)
     
     with col2:
         if "권역별 이상 지역 비율" in images:
             st.markdown("### ⚠️ 권역별 이상 지역 비율")
-            st.image(images["권역별 이상 지역 비율"], use_column_width=True)
+            st.image(images["권역별 이상 지역 비율"], use_container_width=True)
     
     with st.expander("🎯 지역별 대응방안"):
         st.write("""
@@ -263,19 +382,19 @@ def show_roadtype_analysis(images):
     st.markdown("## 🛣️ 도로유형별 로드킬 분석")
     
     if "도로유형별 분석 (통합)" in images:
-        st.image(images["도로유형별 분석 (통합)"], use_column_width=True)
+        st.image(images["도로유형별 분석 (통합)"], use_container_width=True)
     
     col1, col2 = st.columns(2)
     
     with col1:
         if "연도별 도로유형별 로드킬 건수 비교" in images:
             st.markdown("### 📊 연도별 도로유형별 비교")
-            st.image(images["연도별 도로유형별 로드킬 건수 비교"], use_column_width=True)
+            st.image(images["연도별 도로유형별 로드킬 건수 비교"], use_container_width=True)
     
     with col2:
         if "도로유형별 로드킬 합계 및 추이" in images:
             st.markdown("### 📈 도로유형별 추이")
-            st.image(images["도로유형별 로드킬 합계 및 추이"], use_column_width=True)
+            st.image(images["도로유형별 로드킬 합계 및 추이"], use_container_width=True)
 
 # 동물종류별 분석 페이지
 def show_animal_analysis(images):
@@ -286,12 +405,12 @@ def show_animal_analysis(images):
     with col1:
         if "동물 종류별 로드킬 건수 및 합계" in images:
             st.markdown("### 🐾 동물 종류별 로드킬 건수")
-            st.image(images["동물 종류별 로드킬 건수 및 합계"], use_column_width=True)
+            st.image(images["동물 종류별 로드킬 건수 및 합계"], use_container_width=True)
     
     with col2:
         if "동물종류 연도별 로드킬 비율" in images:
             st.markdown("### 📊 동물종류 연도별 비율")
-            st.image(images["동물종류 연도별 로드킬 비율"], use_column_width=True)
+            st.image(images["동물종류 연도별 로드킬 비율"], use_container_width=True)
     
     # 동물별 보호 대책
     with st.expander("🛡️ 동물별 보호 대책"):
@@ -302,89 +421,6 @@ def show_animal_analysis(images):
         - **소형 동물**: 지하통로, 동물 전용 횡단시설
         """)
 
-# 카메라 모니터링 페이지 (원본 HTML 기능 재현)
-def show_camera_monitoring():
-    st.markdown("## 📷 실시간 카메라 모니터링")
-    
-    # 원본 HTML의 카메라 기능을 Streamlit으로 구현
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown('<div class="panel-container">', unsafe_allow_html=True)
-        st.markdown("### 📹 카메라 피드")
-        
-        # 웹캠 기능 (Streamlit camera_input 사용)
-        camera_image = st.camera_input("📸 사진 촬영")
-        
-        if camera_image is not None:
-            st.image(camera_image, caption="촬영된 사진", use_column_width=True)
-            
-            # 위치 정보 시뮬레이션 (실제 GPS는 브라우저 API 필요)
-            if st.button("📍 위치 정보 기록"):
-                current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                # 세션 스테이트에 기록 저장
-                if 'photo_logs' not in st.session_state:
-                    st.session_state.photo_logs = []
-                
-                # 시뮬레이션 위치 (실제로는 GPS API 사용)
-                import random
-                lat = round(37.5665 + random.uniform(-0.01, 0.01), 6)
-                lon = round(126.9780 + random.uniform(-0.01, 0.01), 6)
-                
-                st.session_state.photo_logs.insert(0, {
-                    'time': current_time,
-                    'lat': lat,
-                    'lon': lon
-                })
-                
-                st.success("📍 신고 접수가 완료되었습니다!")
-                st.balloons()  # 시각적 피드백
-        
-        st.markdown('</div>', unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown('<div class="panel-container">', unsafe_allow_html=True)
-        st.markdown("### 🗺️ 위치 기록 타임라인")
-        
-        # 위치 기록 표시
-        if 'photo_logs' in st.session_state and st.session_state.photo_logs:
-            for i, log in enumerate(st.session_state.photo_logs):
-                with st.container():
-                    st.markdown(f"""
-                    <div style="
-                        background: #f8f9fa; 
-                        padding: 10px; 
-                        margin: 5px 0; 
-                        border-left: 4px solid #007bff;
-                        border-radius: 4px;
-                    ">
-                        📸 <strong>[{log['time']}]</strong><br>
-                        📍 위도: {log['lat']}, 경도: {log['lon']}
-                    </div>
-                    """, unsafe_allow_html=True)
-        else:
-            st.info("아직 촬영된 사진이 없습니다.")
-        
-        # 기록 초기화 버튼
-        if st.button("🗑️ 기록 초기화"):
-            st.session_state.photo_logs = []
-            st.success("기록이 초기화되었습니다.")
-        
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        # 지도 시뮬레이션 (실제로는 카카오맵 API 필요)
-        st.markdown("### 🗺️ 현재 위치 (시뮬레이션)")
-        
-        # 간단한 지도 데이터 생성
-        if 'photo_logs' in st.session_state and st.session_state.photo_logs:
-            map_data = pd.DataFrame([
-                {'lat': log['lat'], 'lon': log['lon']} for log in st.session_state.photo_logs[:10]
-            ])
-            st.map(map_data)
-        else:
-            # 기본 서울 위치
-            default_map = pd.DataFrame([{'lat': 37.5665, 'lon': 126.9780}])
-            st.map(default_map)
 
 if __name__ == "__main__":
     main()
