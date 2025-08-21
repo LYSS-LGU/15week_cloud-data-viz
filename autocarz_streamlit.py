@@ -6,7 +6,7 @@ from datetime import datetime
 
 # 페이지 설정
 st.set_page_config(
-    page_title="AutoCarz Dashboard", 
+    page_title="AutoCarz Dashboard made by AI 100%", 
     page_icon="🚗", 
     layout="wide"
 )
