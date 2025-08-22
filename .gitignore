@@ -45,14 +45,14 @@ build/
 .claude/
 
 # 데이터 파일 (필요시 주석 해제)
-# *.csv
-# *.xlsx
-# *.json
+*.csv
+*.xlsx
+*.json
 
 # 문서 관련
 *.pdf
 
 # 이미지 파일 (필요시 주석 해제)
-# *.png
-# *.jpg
-# *.jpeg
+*.png
+*.jpg
+*.jpeg
